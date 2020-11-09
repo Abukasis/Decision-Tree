@@ -303,53 +303,10 @@ namespace MachineLearning {
         }
         #endregion
     }
-        public static List<Dictionary<string, string>> testingMaskData = new List<Dictionary<string, string>>();
-        public static List<Dictionary<string, string>> trainingMaskData = new List<Dictionary<string, string>>();
-        public static DecisionTree maskDetect() {
-            var data = DataUtils.loadMaskData(loc: @"gen5.txt"); // <---put gen5.txt path here
-            var trainingData = new List<Dictionary<string, string>>();
-            var testingData = new List<Dictionary<string, string>>();
-            #region set up data
-            int i = 0;
-            while (i < data.Count) {
-                if (data[i]["q7"].Trim() == "" || string.IsNullOrEmpty(data[i]["q7"])) {
-                    data[i]["q7"] = data[i]["avg"];
-                    if (data[i]["q7"] == "") {
-                        data[i]["q7"] = data[i]["q5"];
-                    }
-                }
-
-
-                if (i <= 718) data[i]["class"] = "without_mask";
-
-                if (i < 5) testingData.Add(data[i]);
-                else if (i < 1430) { trainingData.Add(data[i]); trainingMaskData.Add(new Dictionary<string, string>(data[i])); }
-                else if (i < 1435) testingData.Add(data[i]);
-                else testingData.Add(data[i]);
-                i++;
-            }
-            #endregion
-            var tree = new DecisionTree(minRecordsToSplitNode: 6, accuracyWanted: 0.92);
-            tree.buildDecisionTree(trainingData);
-            testingMaskData = testingData;
-            #region clean Testing Data
-
-            for (int d = 0; d < testingData.Count; d++) {
-                foreach (var k in testingData[d].Keys) {
-                    if (string.IsNullOrEmpty(testingData[d][k])) {
-                        testingData.RemoveAt(d);
-                    }
-                }
-            }
-            #endregion
-            return tree;
-        }
-    }
     static class Program {
         static void Main(string[] args) {
             // Example Usage:
-			//
-			// var tree = new DecisionTree(minRecordsToSplitNode: 6, accuracyWanted: 0.92);
+	    // var tree = new DecisionTree(minRecordsToSplitNode: 6, accuracyWanted: 0.92);
             // tree.buildDecisionTree(trainingData);
             // tree.batchTest(testData, "Unseen Samples");
             // tree.regressionTest();
